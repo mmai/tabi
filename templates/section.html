@@ -24,6 +24,11 @@
 {%- endif -%}
 
 <main {% if more_than_one_section_shown %}class="{{ first_section }}-first"{% endif %}>
+{%- if config.extra.hcard %}
+  <div {% if not hcard.show_card %}class="hidden"{%- endif -%}>
+    {%- include "partials/hcard.html" -%}
+  </div>
+{% endif -%}
 {%- if section.extra.header %}
     {%- include "partials/home_banner.html" -%}
 {%- elif section.content -%}

@@ -1,0 +1,97 @@
+{%- set rel_attributes = macros_rel_attributes::rel_attributes() | trim -%}
+
+{%- if config.markdown.external_links_target_blank -%}
+{%- set blank_target = "target=_blank" -%}
+{%- else -%}
+{%- set blank_target = "" -%}
+{%- endif -%}
+
+{%- set hcard = config.extra.hcard -%}
+
+  {% set full_name = config.author %}
+  {% if hcard.full_name %}
+    {% set full_name = hcard.full_name %}
+  {% endif %}
+
+  {%- set homepage = config.base_url -%}
+  {% if hcard.homepage %}
+    {%- set homepage = hcard.homepage -%}
+  {% endif %}
+
+
+<div class="h-card">
+  <div>
+    {%- if hcard.avatar -%}
+    <img
+      class="u-photo"
+      src="{{ get_url(path=hcard.avatar) }}"
+      width="200"
+      height="200"
+      alt="{{ full_name }}"
+    />
+    {%- endif -%}
+
+    <span class="p-name" rel="me">{{ full_name }}</span>
+
+    {% if hcard.p_nickname %}
+    <span class="p-nickname"> ( {{ hcard.p_nickname }} )</span>
+    {% endif %}
+
+    <div>
+      <ul class="inline-list">
+        {% if hcard.p_street_address %} <li class="p-street-address item">{{ hcard.p_street_address }}</li>{% endif %}
+        {% if hcard.p_locality %} <li class="p-locality item">{{ hcard.p_locality }}</li>{% endif %}
+        {% if hcard.p_region %} <li class="p-region item">{{ hcard.p_region }}</li>{% endif %}
+        {% if hcard.p_country_name %} <li class="p-country-name item">{{ hcard.p_country_name }}</li>{% endif %}
+      </ul>
+    </div>
+  </div>
+
+  {% if hcard.biography %}
+  <p>
+    <span class="p-note">{{ hcard.biography }}</span>
+  </p>
+  {% endif %}
+
+
+  <nav class="nav-navs">
+    <small>
+      <ul>
+      <li>
+        <a class="u-url u-id nav-links no-hover-padding social" href="{{ homepage }}">
+          <img loading="lazy" alt="personal page" title="{{ config.title }}" src="{{ get_url(path='social_icons/home.svg') }}">
+              </a>
+      </li>
+
+      {%- if hcard.with_mail and config.extra.email -%}
+      <li>
+        <a class="u-email nav-links no-hover-padding social" href="mailto:{{ config.extra.email | safe }}">
+          <img loading="lazy" alt="email" title="email" src="{{ get_url(path='social_icons/email.svg') }}">
+        </a>
+      </li>
+      {%- endif -%}
+
+      {%- if hcard.with_social_links and config.extra.socials %}
+        {% for social in config.extra.socials %}
+        <li>
+          <a class="p-url nav-links no-hover-padding social" rel="{{ rel_attributes }} me" {{ blank_target }} href="{{ social.url | safe }}">
+            <img loading="lazy" alt="{{ social.name }}" title="{{ social.name }}" src="{{ get_url(path='social_icons/' ~ social.icon ~ '.svg') }}">
+          </a>
+        </li>
+        {% endfor %}
+      {% endif %}
+      </ul>
+    </small>
+  </nav>
+
+  <dl>
+  {% for key, value in hcard %}
+    {# exclude all properties previously displayed #}
+    {% if key not in ['show_card', 'with_mail', 'with_social_links', 'homepage', 'full_name', 'avatar', 'biography', 'p_nickname', 'p_street_address', 'p_locality', 'p_region', 'p_country_name'] %} 
+      <dt>{{ key | replace(from="p_", to="") | replace(from="u_", to="") | replace(from="dt_", to="") | replace(from="_", to=" ") | capitalize }}</dt>
+      <dd class="{{ key | replace(from="_", to="-") }}">{{ value }}</dd>
+    {% endif %}
+  {% endfor %}
+  </dl>
+
+</div>
