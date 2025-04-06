@@ -1004,7 +1004,6 @@ allowed_domains = [
 Aquesta opció està habilitada per defecte. Per desactivar-la per una pàgina, secció o globalment, estableix `enable_csp = false`. La configuració de `enable_csp` segueix la jerarquia.
 
 Per a més informació, consulta la [pàgina de documentació de CSP](@/blog/security/index.ca.md).
-
 ---
 
 ## Indieweb

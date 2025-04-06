@@ -1005,7 +1005,6 @@ allowed_domains = [
 Esta función está habilitada por defecto. Para deshabilitarla (y permitir todo), configura `enable_csp = false` en una página, sección o globalmente. La opción `enable_csp` sigue [la jerarquía](#jerarquia-de-configuracion).
 
 Para obtener más información, consulta la [página de documentación de CSP](@/blog/security/index.es.md).
-
 ---
 
 ## Indieweb
