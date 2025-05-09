@@ -93,3 +93,12 @@ close_quotation_mark = "”"
 about_feeds = "This is a web feed, also known as an Atom feed. Subscribe by copying the URL from the address bar into your newsreader. Visit About Feeds to learn more and get started. It's free."
 visit_the_site = "Visit website"
 recent_posts = "Recent posts"
+
+# Webmentions
+reactions = "Reactions"
+time_at = "at"
+webmention_one_response = "response"
+webmention_many_responses = "responses"
+webmention_one_mention = "mention"
+webmention_many_mentions = "mentions"
+webmention_source = "source"

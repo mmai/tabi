@@ -1,0 +1,80 @@
+{% import 'macros/webmentions_icons.html' as icons %}
+
+{% macro likeElement(type='', url='', author='', image='') %}
+  <li class="h-card">
+    <a class="u-url"
+       href="{{ url }}"
+       target="_blank"
+       rel="noreferrer"
+       title="Voir le profil de {{ author }}">
+      <img
+        alt=""
+        class="lazy u-photo"
+        src="{{ image | default(value='') }}"
+        loading="lazy"
+        decoding="async"
+        width="48"
+        height="48"
+      >
+      <span class="p-author visually-hidden" aria-hidden="true">{{ author }}</span>
+    </a>
+  </li>
+{% endmacro %}
+
+{% macro commentElement(url='', author='', image='', date='', value='', commentUrl='', language_strings="") %}
+  <li class="comment h-entry">
+    <div>
+      <a class="comment_author u-author"
+         href="{{ url }}"
+         target="_blank"
+         title="Voir le profil de {{ author }}"
+         rel="noreferrer">
+        <img
+          src="{{ image | default(value='') }}"
+          alt=""
+          class="u-photo"
+          loading="lazy"
+          decoding="async"
+          width="48"
+          height="48"
+        >
+        <span class="p-author">{{ author }}</span>
+      </a>
+      <time class="dt-published" datetime="{% if date %}{{ date  }}{% endif %}">
+      {% if date %}
+      {{ macros_format_date::format_date(date=date, short=true, language_strings=language_strings) }}
+      {{ macros_translate::translate(key="time_at", default="at", language_strings=language_strings) }}
+      {{ date | date(format="%H:%M") }}
+      {% endif %}
+      </time>
+    </div>
+
+    <p class="e-entry">{{ value | safe }}
+      <a class="u-url"
+         href="{{ commentUrl }}"
+         target="_blank"
+         rel="noreferrer">
+        {{ macros_translate::translate(key="webmention_source", default="source", language_strings=language_strings) }}
+      </a>
+    </p>
+  </li>
+{% endmacro %}
+
+{% macro render(mentions, type, icon, text, class='') %}
+{% set mentionsSize = mentions | length %}
+{% if mentionsSize %}
+  <div class="{{ class }}">
+    <h3 class="" id="{{ type }}-header">
+      {{ icons::icon(name=icon, size=24, class=' color--primary') }}
+      &nbsp;<span class="">{{ mentionsSize }}</span>
+      {{ text }}
+    </h3>
+
+    <ol class="likes" role="list" aria-labelledby="{{ type }}-header">
+      {% for mention in mentions %}
+        {{ macros_webmentions::likeElement(type=type, url=mention.author.url, author=mention.author.name, image=mention.author.photo) }}
+      {% endfor %}
+    </ol>
+  </div>
+{% endif %}
+{% endmacro %}

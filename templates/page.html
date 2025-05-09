@@ -329,7 +329,7 @@ Current section extra: {% if current_section %}{{ current_section.extra | json_e
 
         {# Webmentions #}
         {%- if config.extra.webmentions.enable -%}
-            {%- include "partials/webmentions.html" -%} 
+            {%- include "partials/webmentions_list.html" -%} 
         {%- endif -%}
 
         {% for system in systems %}

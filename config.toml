@@ -374,6 +374,9 @@ self_hosted_url = "https://tabi-stats.osc.garden"
 
 [extra.webmentions]
 enable = false
+# Directory where webmentions are stored, relative to 'content/'
+# if not specified webmentions are dynamically loaded from webmentions.io via javascript
+# jf2_path = "webmentions"
 # Specify the domain registered with webmention.io.
 # domain = ""
 

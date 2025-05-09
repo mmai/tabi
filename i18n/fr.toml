@@ -93,3 +93,12 @@ close_quotation_mark = "»"
 about_feeds = "Ceci est un flux web, également connu sous le nom de flux Atom. Abonnez-vous en copiant l'URL de la barre d'adresse dans votre lecteur de nouvelles. Visitez About Feeds pour en savoir plus et commencez. C'est gratuit."
 visit_the_site = "Visitez le site web"
 recent_posts = "Articles récents"
+
+# Webmentions
+reactions = "Réactions"
+time_at = "à"
+webmention_one_response = "réponse"
+webmention_many_responses = "réponses"
+webmention_one_mention = "mention"
+webmention_many_mentions = "mentions"
+webmention_source = "source"
