@@ -99,4 +99,18 @@
 
 {% endif %}
 
+  <p>
+    {{ macros_translate::translate(key="webmention_description_support", default="This site supports", language_strings=language_strings) }} 
+<a href="https://indieweb.org/Webmention" rel="noreferrer" target="_blank">webmentions</a>.
+        {{ macros_translate::translate(key="webmention_description_submit", default="If you have published an article mentioning this page, you can indicate its address here:", language_strings=language_strings) }}
+  <form class="form" method="post" action="https://webmention.io/misc.rhumbs.fr/webmention" aria-labelledby="webmentions-explanation">
+    <input type="hidden" name="target" value="{{ current_url }}">
+    <div>
+      <input id="webmention-source" type="url" name="source" placeholder="https://yoursite.com/example" required >
+      <button type="submit">
+        {{ macros_translate::translate(key="webmention_submit", default="Submit", language_strings=language_strings) }}
+        </button>
+    </div>
+  </form>
+</p>
 </div>
