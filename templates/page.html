@@ -349,7 +349,7 @@ Current section extra: {% if current_section %}{{ current_section.extra | json_e
         {%- set page_webmentions_enabled = page.extra.webmentions | default(value=global_webmentions_enabled) -%}
         {%- set webmentions_enabled = global_webmentions_enabled and page_webmentions_enabled != false or page_webmentions_enabled == true -%}
         {%- if webmentions_enabled -%}
-            {%- include "partials/webmentions.html" -%}
+            {%- include "partials/webmentions_list.html" -%}
         {%- endif -%}
 
     </article>

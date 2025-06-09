@@ -1,0 +1,102 @@
+{% set current_webmention_file_name = current_path | trim_end_matches(pat="/") %}
+{% set webmention_data = load_data(path="webmentions"~current_webmention_file_name~".jf2",required=false, format="json") %}
+{% set webmentions = webmention_data.children | default(value=[]) | group_by(attribute="wm-property") %}
+
+{% set reposts = webmentions | get(key="repost-of", default=[]) %}
+{% set repostsSize = reposts | length %}
+
+{% set likes = webmentions | get(key='like-of', default=[]) %}
+{% set likesSize = likes | length %}
+
+{% set replies = webmentions | get(key='in-reply-to', default=[]) | sort(attribute="published")  %}
+{% set repliesSize = replies | length  %}
+
+{% set bookmarks = webmentions | get(key='bookmark-of', default=[])  %}
+{% set bookmarksSize = bookmarks | length  %}
+
+{% set mentions = webmentions | get(key='mention-of', default=[])  %}
+{% set mentionsSize = mentions | length  %}
+
+{# rsvp #}
+
+
+{%- set format = config.extra.webmentions.format | default(value="") -%}
+{% if format == "" %}
+  {%- set dash = "" -%}
+{% else %}
+  {%- set dash = "-" -%}
+{% endif %}
+
+<div id="webmentions">
+  <hr>
+  <h2>{{ macros_translate::translate(key="reactions", default="Reactions", language_strings=language_strings) }}</h2>
+{% if not config.extra.webmentions.jf2_path  %}
+  <div id="dynamic_webmentions{{ dash }}{{ format }}"></div>
+{% else %}
+  {{ macros_webmentions::render(mentions=likes, type='like', icon='heart', text='likes', class=' spacing-sm') }}
+  {{ macros_webmentions::render(mentions=reposts, type='retweet', icon='retweet', text='reposts', class=' spacing-md') }}
+  {{ macros_webmentions::render(mentions=bookmarks, type='bookmark', icon='bookmark', text='bookmarks', class=' spacing-md') }}
+
+  {% if repliesSize %}
+  <div class="webcomments">
+    <h3 id="replies-header">
+      {{ icons::icon(name='comment', size=24, class=' color--primary') }}
+      &nbsp;<span>{{ repliesSize }}</span> 
+      {% if repliesSize > 1 %}
+        {{ macros_translate::translate(key="webmention_many_responses", default="responses", language_strings=language_strings) }}
+      {% else %}
+        {{ macros_translate::translate(key="webmention_one_response", default="response", language_strings=language_strings) }}
+      {% endif %}
+    </h3>
+
+    <ol aria-labelledby="replies-header" role="list">
+      {% for comment in replies %}
+      {% set txtcontent = comment.content.text | default(value="???") %}
+      {% set content = comment.content.html | default(value=txtcontent) %}
+        {{ macros_webmentions::commentElement(
+          url=comment.author.url,
+          author=comment.author.name,
+          image=comment.author.photo,
+          date=comment.published,
+          value=content,
+          commentUrl=comment.url,
+          language_strings=language_strings)
+      }}
+      {% endfor %}
+    </ol>
+  </div>
+ {% endif %}
+
+{% if mentionsSize %}
+  <div class="mentions">
+    <h3 id="mentions-header">
+      {{ icons::icon(name='comment', size=24, class=' color--primary') }}
+      &nbsp;<span>{{ mentionsSize }}</span>
+      {% if mentionsSize > 1 %}
+        {{ macros_translate::translate(key="webmention_many_mentions", default="responses", language_strings=language_strings) }}
+      {% else %}
+        {{ macros_translate::translate(key="webmention_one_mention", default="response", language_strings=language_strings) }}
+      {% endif %}
+    </h3>
+
+    <ol aria-labelledby="mentions-header" role="list">
+      {% for comment in mentions %}
+      {% set txtcontent = comment.content.html | default(value="???") %}
+      {% set content = comment.content.html | default(value=txtcontent) %}
+        {{ macros_webmentions::commentElement(
+          url=comment.author.url,
+          author=comment.author.name,
+          image=comment.author.photo,
+          date=comment.published,
+          value=content,
+          commentUrl=comment.url,
+          language_strings=language_strings)
+      }}
+      {% endfor %}
+    </ol>
+  </div>
+ {% endif %}
+
+{% endif %}
+
+</div>

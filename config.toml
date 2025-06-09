@@ -431,6 +431,9 @@ lazy_loading = true  # Loads when the comments are in the viewport (using the In
 [extra.webmentions]
 # To disable for a specific section or page, set webmentions = false in that page/section's front matter's [extra] section.
 enable = false
+# Directory where webmentions are stored, relative to 'content/'
+# if not specified webmentions are dynamically loaded from webmentions.io via javascript
+# jf2_path = "webmentions"
 # Specify the domain registered with webmention.io.
 domain = ""
 
