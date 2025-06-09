@@ -74,6 +74,8 @@ build_search_index = false
 # Check out the documentation (or the comments below) to learn how to customise tabi:
 # https://welpo.github.io/tabi/blog/mastering-tabi-settings/
 
+timezone = "Europe/Madrid"
+
 # Search index format.
 # For Zola 0.17.X users only.
 # This MUST MATCH the setting in [search].index_format.
@@ -458,6 +460,9 @@ lazy_loading = true  # Loads when the comments are in the viewport (using the In
 enable = false
 # Specify the domain registered with webmention.io.
 domain = ""
+# Directory where webmentions are stored, relative to 'content/'
+# If not specified, webmentions are dynamically loaded from webmentions.io via javascript
+# jf2_path = "webmentions"
 
 # The HTML ID for the object to fill in with the webmention data.
 # Defaults to "webmentions"
