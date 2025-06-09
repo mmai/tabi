@@ -1,0 +1,35 @@
+{% component webmentions(mentions: array, type: string, icon: string, text: string, class = "") %}
+{% set mentionsSize = mentions | length %}
+{% if mentionsSize %}
+  <div class="{{ class }}">
+    <h3 class="" id="{{ type }}-header">
+      {{< webmentions_icons name={icon} size={24} class=" color--primary" />}}
+      &nbsp;<span class="">{{ mentionsSize }}</span>
+      {{ text }}
+    </h3>
+
+    <ol class="likes" role="list" aria-labelledby="{{ type }}-header">
+      {% for mention in mentions %}
+        <li class="h-card">
+          <a class="u-url"
+             href="{{ mention.author.url }}"
+             target="_blank"
+             rel="noreferrer"
+             title="{{ mention.author.name }}">
+            <img
+              alt=""
+              class="lazy u-photo"
+              src="{{ mention.author.photo | default(value='') }}"
+              loading="lazy"
+              decoding="async"
+              width="48"
+              height="48"
+            >
+            <span class="p-author visually-hidden" aria-hidden="true">{{ mention.author.name }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+{% endif %}
+{% endcomponent webmentions %}

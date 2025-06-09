@@ -1,0 +1,40 @@
+{% component webmentions_comment(url: string, author: string, image = "", date = "", value: string, comment_url: string, @config: map, @language_strings = {}) %}
+<li class="comment h-entry">
+  <div>
+    <a class="comment_author u-author"
+       href="{{ url }}"
+       target="_blank"
+       title="{{ author }}"
+       rel="noreferrer">
+      <img
+        src="{{ image | default(value='') }}"
+        alt=""
+        class="u-photo"
+        loading="lazy"
+        decoding="async"
+        width="48"
+        height="48"
+      >
+      <span class="p-author">{{ author }}</span>
+    </a>
+    <time class="dt-published" datetime="{% if date %}{{ date }}{% endif %}">
+    {% if date %}
+      {%- set formatted_date %}{{< format_date date={date} short={true} />}}{% endset -%}
+      {{- formatted_date | trim -}}
+      {% if date | date(format="%T") != "00:00:00" %},
+        {{ date | date(format="%H:%M (%Z)", timezone=config.extra.timezone | default(value="UTC")) }}
+      {% endif %}
+    {% endif %}
+    </time>
+  </div>
+
+  <p class="e-entry">{{ value | safe }}
+    <a class="u-url"
+       href="{{ comment_url }}"
+       target="_blank"
+       rel="noreferrer">
+      {{< translate key="webmention_source" default="source" />}}
+    </a>
+  </p>
+</li>
+{% endcomponent webmentions_comment %}
