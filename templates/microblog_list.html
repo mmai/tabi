@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+{% set published_time_class = 'dt-published' %}
+{% if config.extra.microblog.show_title %}
+  {% set published_time_class = 'dt-published title-secondary' %}
+{% endif %}
+<main>
+    <div id="microblog-list">
+
+        <div>
+            {{ macros_page_header::page_header(title=section.title) }}
+        </div>
+
+  <ul aria-labelledby="microblog-header" role="list">
+    {% for post in paginator.pages %}
+
+    <li class="micropost h-entry">
+      <h2>
+        <a href="{{ post.permalink }}">
+        {% if config.extra.microblog.show_title %}
+          <span class="title">{{ post.title }}</span>
+        {% endif %}
+        <time class="{{published_time_class}}" datetime="{% if post.date %}{{ post.date  }}{% endif %}">
+        {% if post.date %}
+        {{ macros_format_date::format_date(date=post.date, short=true, language_strings=language_strings) }},
+        {{ post.date | date(format=config.extra.time_format | default(value="%R (%Z)"), timezone=config.extra.timezone | default(value="UTC")) }}
+        {% endif %}
+        </time>
+        </a>
+      </h2>
+      <div class="e-entry">{{ post.content | safe }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+
+</div>
+{% if paginator and paginator.pages | length > 0 %}
+    {%- include "partials/paginate.html" -%}
+{% endif %}
+{% endblock main_content %}
+{% block actions %}
+<a href="{{ current_url ~ 'atom.xml' }}" title="Feed"><i class="ph-bold ph-rss-simple"></i></a>
+{% endblock actions %}
+
+</main>
