@@ -1,0 +1,50 @@
+{%- import "macros/translate.html" as macros_translate -%}
+{%- import "macros/settings.html" as macros_settings -%}
+{#- Load the internationalisation data -#}
+{%- set language_strings = load_data(path="i18n/" ~ lang ~ '.toml', required=false) -%}
+{%- if not language_strings -%}
+    {%- set language_strings = load_data(path="themes/tabi/i18n/" ~ lang ~ ".toml", required=false) -%}
+{%- endif -%}
+{
+    "version": "https://jsonfeed.org/version/1",
+    "home_page_url": "{{ config.base_url }}",
+    "feed_url": "{{ config.base_url }}/feed.json",
+    "title": "{{ config.title | striptags | safe }}
+    {%- if term %} - {{ term.name }}
+    {%- elif section.title %} - {{ section.title }}
+    {%- endif -%}",
+    "items": [
+    {%- for page in pages %}
+    {%- if macros_settings::evaluate_setting_priority(setting="hide_from_feed", page=page, default_global_value=false) == "true" -%}
+        {%- continue -%}
+    {%- endif -%}
+    {#- Skip if hide_from_main_feed is true and this is the main feed -#}
+    {%- if macros_settings::evaluate_setting_priority(setting="hide_from_main_feed", page=page, default_global_value=false) == "true"
+         and not section
+         and not term -%}
+        {%- continue -%}
+    {%- endif -%}
+        {
+            "id": "{{ page.permalink | safe }}",
+            "url": "{{ page.permalink | safe }}",
+            "content_html": "{% if config.extra.full_content_in_feed %}
+              {{ page.content | safe }}
+        {% elif page.description -%}
+            {{ page.description }}
+        {% elif page.summary -%}
+            {{ page.summary | striptags | trim_end_matches(pat=".") | safe }}…
+        {% endif -%}",
+            "date_published": "{{ page.date | date(format="%+") }}",
+            "author": {
+                "name": "{%- if page.authors -%}
+                {{ page.authors[0] }}
+            {%- elif config.author -%}
+                {{ config.author }}
+            {%- else -%}
+                Unknown
+            {%- endif -%}"
+            }
+        }
+    {%- endfor %}
+    ]
+}

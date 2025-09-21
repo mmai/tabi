@@ -1,0 +1,67 @@
+{%- import "macros/translate.html" as macros_translate -%}
+{%- import "macros/settings.html" as macros_settings -%}
+{#- Load the internationalisation data -#}
+{%- set language_strings = load_data(path="i18n/" ~ lang ~ '.toml', required=false) -%}
+{%- if not language_strings -%}
+    {%- set language_strings = load_data(path="themes/tabi/i18n/" ~ lang ~ ".toml", required=false) -%}
+{%- endif -%}
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+ <channel>
+    <title>{{ config.title | striptags | safe }}
+    {%- if term %} - {{ term.name }}
+    {%- elif section.title %} - {{ section.title }}
+    {%- endif -%}
+    </title>
+    {%- if config.description %}
+   <description>{{ config.description }}</description>
+    {%- endif %}
+    <link>
+        {%- if term -%}
+            {{ term.permalink | escape_xml | safe }}
+        {%- elif section -%}
+            {{ section.permalink | escape_xml | safe }}
+        {%- else -%}
+            {{ get_url(path="/", lang=lang) | escape_xml | safe }}
+        {%- endif -%}
+    </link>
+
+    {%- for page in pages %}
+    {%- if macros_settings::evaluate_setting_priority(setting="hide_from_feed", page=page, default_global_value=false) == "true" -%}
+        {%- continue -%}
+    {%- endif -%}
+    {#- Skip if hide_from_main_feed is true and this is the main feed -#}
+    {%- if macros_settings::evaluate_setting_priority(setting="hide_from_main_feed", page=page, default_global_value=false) == "true"
+         and not section
+         and not term -%}
+        {%- continue -%}
+    {%- endif -%}
+    <item xml:lang="{{ page.lang }}">
+        <title>{{ page.title }}</title>
+     <description><![CDATA[
+        {% if config.extra.full_content_in_feed %}
+              {{ page.content | safe }}
+        {% elif page.description -%}
+            {{ page.description }}
+        {% elif page.summary -%}
+            {{ page.summary | striptags | trim_end_matches(pat=".") | safe }}…
+        {% endif -%}
+     ]]></description>
+        <pubDate>{{ page.date | date(format="%+") }}</pubDate>
+        <guid isPermalink="true">{{ page.permalink | safe }}</guid>
+        <link>{{ page.permalink | safe }}</link>
+        <author>
+            {%- if page.authors -%}
+                {{ page.authors[0] }}
+            {%- elif config.author -%}
+                {{ config.author }}
+            {%- else -%}
+                Unknown
+            {%- endif -%}
+        </author>
+    </item>
+    {%- endfor %}
+
+ </channel>
+</rss>
