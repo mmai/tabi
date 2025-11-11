@@ -28,6 +28,9 @@
 {% elif taxonomy.name %}
     {#- List of tags -#}
     {%- set suffix = macros_translate::translate(key=taxonomy.name, language_strings=language_strings) | capitalize -%}
+{% elif page.date %}
+    {#- Individual tags -#}
+    {%- set suffix = page.date -%}
 {% else %}
     {%- set suffix = "404" %}
 {%- endif -%}
