@@ -30,7 +30,17 @@
         </time>
         </a>
       </h2>
-      <div class="e-entry">{{ post.content | safe }}</div>
+      <div class="e-entry">
+        {{ post.content | safe }}
+
+    {% if post.taxonomies.tags %}
+    <p>
+      {% for tag in post.taxonomies.tags %}
+          <a class="tag" href="{{ get_taxonomy_url(kind='tags', name=tag, lang=lang) | safe }}">#{{ tag }}</a>
+      {% endfor %}
+    </p>
+    {% endif %}
+      </div>
     </li>
     {% endfor %}
   </ul>

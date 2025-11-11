@@ -31,6 +31,12 @@
 	</div>
   <section class="e-content body">
     {{ page.content | safe }}
+
+    {% if page.taxonomies.tags %}
+      {% for tag in page.taxonomies.tags %}
+          #{{ tag }}
+      {% endfor %}
+    {% endif %}
   </section>
 
 	{%- if page.higher -%}

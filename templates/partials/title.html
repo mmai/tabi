@@ -27,7 +27,11 @@
     {%- set suffix = term.name -%}
 {% elif taxonomy.name %}
     {#- List of tags -#}
-    {%- set suffix = language_strings[taxonomy.name] | default(value=taxonomy.name) | capitalize -%}
+    {%- set translated_taxonomy_name %}{{< translate key={taxonomy.name} default={taxonomy.name} />}}{% endset -%}
+    {%- set suffix = translated_taxonomy_name | trim | capitalize -%}
+{% elif page.date %}
+    {#- Individual tags -#}
+    {%- set suffix = page.date -%}
 {% else %}
     {%- set suffix = "404" %}
 {%- endif -%}
