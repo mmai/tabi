@@ -1,0 +1,11 @@
+{#- Embeds a video from an Immich shared-link page (e.g. a self-hosted Immich instance).
+
+Parameters:
+- `url`: the full Immich share URL, e.g.
+  "https://pictures.example.com/share/<key>/photos/<assetId>".
+- `class`: optional extra class(es) for the wrapping div. -#}
+{% component immich_video(url: string, class = "") %}
+<div{% if class %} class="{{ class }}"{% endif %}>
+    <iframe src="{{ url }}" allow="fullscreen" allowfullscreen loading="lazy"></iframe>
+</div>
+{% endcomponent immich_video %}
