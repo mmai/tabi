@@ -104,7 +104,7 @@
                         {%- endif -%}
                     {%- endif -%}
 
-                    {% if post.extra.local_image or post.extra.remote_image %}
+                    {% if post.extra.local_image or post.extra.local_post_image or post.extra.remote_image %}
                         <li class="post-thumbnail">
                             <a href="{{ post.permalink }}">
                                 {% if post.extra.local_image_dark and not post.extra.local_image %}
@@ -113,7 +113,19 @@
                                 {% if post.extra.remote_image_dark and not post.extra.remote_image %}
                                     {{ throw(message="ERROR: `remote_image_dark` requires `remote_image` to be set in " ~ post.path) }}
                                 {% endif %}
-                                {% if post.extra.local_image %}
+                                {% if post.extra.local_image and post.extra.local_post_image %}
+                                    {{ throw(message="ERROR: `local_image` and `local_post_image` are mutually exclusive, pick one in " ~ post.path) }}
+                                {% endif %}
+                                {% if post.extra.local_image or post.extra.local_post_image %}
+                                    {% set local_image_path = post.extra.local_image %}
+                                    {% if post.extra.local_post_image %}
+                                        {% set post_dirs = (post.relative_path | split(pat="/"))[:-1] %}
+                                        {% set post_colocated_path = "" %}
+                                        {% if post_dirs | length > 0 %}
+                                            {% set post_colocated_path = post_dirs | join(sep="/") ~ "/" %}
+                                        {% endif %}
+                                        {% set local_image_path = post_colocated_path ~ post.extra.local_post_image %}
+                                    {% endif %}
                                     {% if post.extra.local_image_dark %}
                                         {# Show light image only in light mode, dark image only in dark mode #}
                                         {% set meta_dark = get_image_metadata(path=post.extra.local_image_dark, allow_missing=true) %}
@@ -123,10 +135,10 @@
                                             {% if meta_dark.width %}width="{{ meta_dark.width }}"{% endif %}
                                             {% if meta_dark.height %}height="{{ meta_dark.height }}"{% endif %}>
                                     {% endif %}
-                                    {% set meta = get_image_metadata(path=post.extra.local_image, allow_missing=true) %}
+                                    {% set meta = get_image_metadata(path=local_image_path, allow_missing=true) %}
                                     <img class="thumbnail-image{% if post.extra.local_image_dark %} img-light{% endif %}"
-                                        alt="{{ post.extra.local_image }}"
-                                        src="{{ get_url(path=post.extra.local_image) }}"
+                                        alt="{{ local_image_path }}"
+                                        src="{{ get_url(path=local_image_path) }}"
                                         {% if meta.width %}width="{{ meta.width }}"{% endif %}
                                         {% if meta.height %}height="{{ meta.height }}"{% endif %}>
                                 {% elif post.extra.remote_image %}
