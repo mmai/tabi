@@ -2,17 +2,18 @@
 
 {% block main_content %}
 <main>
-{%- set rel_attributes = macros_rel_attributes::rel_attributes() | trim -%}
+{%- set rel_attributes %}{{< rel_attributes />}}{% endset %}{% set rel_attributes = rel_attributes | trim -%}
 <article>
 <div id="microblog-post" class="h-entry">
   <a class="u-url u-uid" href="{{ page.permalink | safe }}"></a>
-  {%- if config.extra.hcard and config.extra.hcard.enable and ( not author_list or author_list is containing(config.author)) -%}
+  {%- if config.extra.hcard and config.extra.hcard.enable and ( not author_list or author_list is containing(pat=config.author)) -%}
       {% include "partials/hcard_small.html" %}
   {%- endif -%}
 	{%- if page.lower -%}
 		<span id="microblog-higher">
 			<a href="{{ page.lower.permalink }}">
-        {{ macros_format_date::format_date(date=page.lower.date, short=true, language_strings=language_strings) }},
+        {%- set lower_formatted_date %}{{< format_date date={page.lower.date} short={true} />}}{% endset -%}
+        {{- lower_formatted_date | trim }},
         {{ page.lower.date | date(format=config.extra.time_format | default(value="%R (%Z)"), timezone=config.extra.timezone | default(value="UTC")) }}
       </a>
 		</span>
@@ -20,8 +21,9 @@
 
 	<div id="microblog-heading">
 		<h1>
-        <time class="dt-published" datetime="{% if post.date %}{{ post.date  }}{% endif %}">
-        {{ macros_format_date::format_date(date=page.date, short=true, language_strings=language_strings) }},
+        <time class="dt-published" datetime="{% if page.date %}{{ page.date  }}{% endif %}">
+        {%- set page_formatted_date %}{{< format_date date={page.date} short={true} />}}{% endset -%}
+        {{- page_formatted_date | trim }},
         {{ page.date | date(format=config.extra.time_format | default(value="%R (%Z)"), timezone=config.extra.timezone | default(value="UTC")) }}
         </time>
     </h1>
@@ -42,7 +44,8 @@
 	{%- if page.higher -%}
 		<span id="microblog-lower">
 			<a href="{{ page.higher.permalink }}">
-        {{ macros_format_date::format_date(date=page.higher.date, short=true, language_strings=language_strings) }},
+        {%- set higher_formatted_date %}{{< format_date date={page.higher.date} short={true} />}}{% endset -%}
+        {{- higher_formatted_date | trim }},
         {{ page.higher.date | date(format=config.extra.time_format | default(value="%R (%Z)"), timezone=config.extra.timezone | default(value="UTC")) }}
       </a>
 		</span>
@@ -51,12 +54,11 @@
 
         {#- Webmentions -#}
         {%- set global_webmentions_enabled = config.extra.webmentions.enable | default(value=false) -%}
-        {%- set page_webmentions_enabled = page.extra.webmentions | default(value=global_webmentions_enabled) -%}
+        {%- set page_webmentions_enabled = page?.extra?.webmentions | default(value=global_webmentions_enabled) -%}
         {%- set webmentions_enabled = global_webmentions_enabled and page_webmentions_enabled != false or page_webmentions_enabled == true -%}
         {%- if webmentions_enabled -%}
             {%- include "partials/webmentions_list.html" -%}
         {%- endif -%}
 </article>
-{% endblock main_content %}
-
 </main>
+{% endblock main_content %}

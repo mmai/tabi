@@ -1,10 +1,15 @@
-{%- import "macros/translate.html" as macros_translate -%}
-{%- import "macros/settings.html" as macros_settings -%}
+{#- Feeds render for the whole site, sections, and taxonomy terms. Define every optional
+    context so the shared template can inspect it safely. -#}
+{%- if not section is defined -%}{%- set section = {} -%}{%- endif -%}
+{%- if not term is defined -%}{%- set term = {} -%}{%- endif -%}
+{%- if not taxonomy is defined -%}{%- set taxonomy = {} -%}{%- endif -%}
+{%- if not page is defined -%}{%- set page = {} -%}{%- endif -%}
 {#- Load the internationalisation data -#}
 {%- set language_strings = load_data(path="i18n/" ~ lang ~ '.toml', required=false) -%}
 {%- if not language_strings -%}
     {%- set language_strings = load_data(path="themes/tabi/i18n/" ~ lang ~ ".toml", required=false) -%}
 {%- endif -%}
+{%- if not language_strings -%}{%- set language_strings = {} -%}{%- endif -%}
 
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -28,11 +33,13 @@
     </link>
 
     {%- for page in pages %}
-    {%- if macros_settings::evaluate_setting_priority(setting="hide_from_feed", page=page, default_global_value=false) == "true" -%}
+    {%- set hide_from_feed %}{{< evaluate_setting_priority setting="hide_from_feed" default_global_value="false" />}}{% endset -%}
+    {%- if hide_from_feed | trim == "true" -%}
         {%- continue -%}
     {%- endif -%}
     {#- Skip if hide_from_main_feed is true and this is the main feed -#}
-    {%- if macros_settings::evaluate_setting_priority(setting="hide_from_main_feed", page=page, default_global_value=false) == "true"
+    {%- set hide_from_main_feed %}{{< evaluate_setting_priority setting="hide_from_main_feed" default_global_value="false" />}}{% endset -%}
+    {%- if hide_from_main_feed | trim == "true"
          and not section
          and not term -%}
         {%- continue -%}
@@ -45,10 +52,10 @@
         {% elif page.description -%}
             {{ page.description }}
         {% elif page.summary -%}
-            {{ page.summary | striptags | trim_end_matches(pat=".") | safe }}…
+            {{ page.summary | striptags | trim_end(pat=".") | safe }}…
         {% endif -%}
      ]]></description>
-        <pubDate>{{ page.date | date(format="%+") }}</pubDate>
+        <pubDate>{{ page.date | date(format="%Y-%m-%dT%H:%M:%S%:z") }}</pubDate>
         <guid isPermalink="true">{{ page.permalink | safe }}</guid>
         <link>{{ page.permalink | safe }}</link>
         <author>

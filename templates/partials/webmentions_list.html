@@ -1,4 +1,4 @@
-{% set current_webmention_file_name = current_path | trim_end_matches(pat="/") %}
+{% set current_webmention_file_name = current_path | trim_end(pat="/") %}
 {% set webmention_data = load_data(path="webmentions"~current_webmention_file_name~".jf2",required=false, format="json") %}
 {% set webmentions = webmention_data.children | default(value=[]) | group_by(attribute="wm-property") %}
 

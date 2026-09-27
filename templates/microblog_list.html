@@ -10,7 +10,7 @@
     <div id="microblog-list">
 
         <div>
-            {{ macros_page_header::page_header(title=section.title) }}
+            {{< page_header title={section.title} />}}
         </div>
 
   <ul aria-labelledby="microblog-header" role="list">
@@ -24,7 +24,8 @@
         {% endif %}
         <time class="{{published_time_class}}" datetime="{% if post.date %}{{ post.date  }}{% endif %}">
         {% if post.date %}
-        {{ macros_format_date::format_date(date=post.date, short=true, language_strings=language_strings) }},
+        {%- set post_formatted_date %}{{< format_date date={post.date} short={true} />}}{% endset -%}
+        {{- post_formatted_date | trim }},
         {{ post.date | date(format=config.extra.time_format | default(value="%R (%Z)"), timezone=config.extra.timezone | default(value="UTC")) }}
         {% endif %}
         </time>
@@ -49,9 +50,5 @@
 {% if paginator and paginator.pages | length > 0 %}
     {%- include "partials/paginate.html" -%}
 {% endif %}
-{% endblock main_content %}
-{% block actions %}
-<a href="{{ current_url ~ 'atom.xml' }}" title="Feed"><i class="ph-bold ph-rss-simple"></i></a>
-{% endblock actions %}
-
 </main>
+{% endblock main_content %}
