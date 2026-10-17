@@ -107,3 +107,11 @@ webmention_many_responses = "réponses"
 webmention_one_mention = "mention"
 webmention_many_mentions = "mentions"
 webmention_source = "source"
+
+# Git comments
+comments = "Commentaires"
+comment_name = "Nom"
+comment_website = "Site web (facultatif)"
+comment_message = "Commentaire"
+comment_submit = "Envoyer"
+comment_moderation_notice = "Les commentaires sont publiés après modération."

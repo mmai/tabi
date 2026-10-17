@@ -1,0 +1,64 @@
+{#- Comments stored as JSON files in the page bundle (<page>/comments/*.json),
+    added through pull requests opened by the /api/comment Pages Function. -#}
+{%- set commentsSize = 0 -%}
+{%- for asset in page.assets -%}
+  {%- if asset is containing(pat="/comments/") and asset is ending_with(pat=".json") -%}
+    {%- set_global commentsSize = commentsSize + 1 -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<section id="comments" class="git-comments">
+  <hr>
+  <h2>{{< translate key="comments" default="Comments" />}}{% if commentsSize %} ({{ commentsSize }}){% endif %}</h2>
+
+  {%- if commentsSize %}
+  <ol role="list">
+    {%- for asset in page.assets %}
+    {%- if asset is containing(pat="/comments/") and asset is ending_with(pat=".json") %}
+    {%- set comment = load_data(path=asset, format="json") %}
+    <li class="git-comment" id="comment-{{ comment.id }}">
+      <div class="git-comment-meta">
+        {%- if comment.url %}
+        <a class="git-comment-author" href="{{ comment.url }}" rel="nofollow ugc noreferrer" target="_blank">{{ comment.name }}</a>
+        {%- else %}
+        <span class="git-comment-author">{{ comment.name }}</span>
+        {%- endif %}
+        <time datetime="{{ comment.date }}">
+          {%- set formatted_date %}{{< format_date date={comment.date} short={true} />}}{% endset -%}
+          {{- formatted_date | trim -}}
+        </time>
+      </div>
+      <p class="git-comment-message">
+        {%- for line in comment.message | split(pat="\n") -%}
+          {{ line }}{% if not loop.last %}<br>{% endif %}
+        {%- endfor -%}
+      </p>
+    </li>
+    {%- endif %}
+    {%- endfor %}
+  </ol>
+  {%- endif %}
+
+  <form class="git-comment-form" method="post" action="{{ config.extra.git_comments.endpoint | default(value='/api/comment') }}">
+    <input type="hidden" name="page" value="{{ page.relative_path }}">
+    <input type="hidden" name="back" value="{{ current_path }}">
+    <label>{{< translate key="comment_name" default="Name" />}}
+      <input type="text" name="name" required maxlength="80" autocomplete="name">
+    </label>
+    <label>{{< translate key="comment_website" default="Website (optional)" />}}
+      <input type="url" name="url" maxlength="200" autocomplete="url" placeholder="https://">
+    </label>
+    <label class="git-comment-honeypot" aria-hidden="true">Ne pas remplir
+      <input type="text" name="website_confirm" tabindex="-1" autocomplete="off">
+    </label>
+    <label>{{< translate key="comment_message" default="Comment" />}}
+      <textarea name="message" required maxlength="5000" rows="5"></textarea>
+    </label>
+    {%- if config.extra.git_comments.turnstile_sitekey %}
+    <div class="cf-turnstile" data-sitekey="{{ config.extra.git_comments.turnstile_sitekey }}"></div>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {%- endif %}
+    <p class="git-comment-notice">{{< translate key="comment_moderation_notice" default="Comments are published after moderation." />}}</p>
+    <button type="submit">{{< translate key="comment_submit" default="Send" />}}</button>
+  </form>
+</section>

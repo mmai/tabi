@@ -1,0 +1,84 @@
+.git-comments {
+    h2 {
+        font-size: 1.1em;
+    }
+
+    ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    .git-comment {
+        margin-bottom: 1rem;
+        border-radius: 10px;
+        background: var(--bg-0);
+        padding: 1rem;
+        font-size: 80%;
+    }
+
+    .git-comment-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        color: var(--meta-color);
+    }
+
+    .git-comment-author {
+        font-weight: bold;
+    }
+
+    .git-comment-message {
+        margin-bottom: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .git-comment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            font-size: 0.9em;
+        }
+
+        input,
+        textarea {
+            box-sizing: border-box;
+            border: 1px solid var(--divider-color);
+            border-radius: 5px;
+            background-color: var(--background-color);
+            padding: 0.5rem;
+            width: 100%;
+            color: var(--text-color);
+            font: inherit;
+        }
+
+        button {
+            align-self: flex-start;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            padding: 0.5rem 1.25rem;
+            color: var(--hover-color);
+            font: inherit;
+        }
+    }
+
+    .git-comment-notice {
+        margin: 0;
+        color: var(--meta-color);
+        font-size: 0.8em;
+    }
+
+    .git-comment-honeypot {
+        position: absolute;
+        left: -10000px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+    }
+}

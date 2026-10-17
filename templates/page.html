@@ -365,6 +365,14 @@ Current section extra: {% if current_section %}{{ current_section.extra | json_e
             {% include "partials/comments.html" %}
         {% endif %}
 
+        {#- Git comments (comments/*.json in the page bundle) -#}
+        {%- set global_git_comments_enabled = config.extra.git_comments.enable | default(value=false) -%}
+        {%- set page_git_comments_enabled = page?.extra?.git_comments | default(value=global_git_comments_enabled) -%}
+        {%- set git_comments_enabled = global_git_comments_enabled and page_git_comments_enabled != false or page_git_comments_enabled == true -%}
+        {%- if git_comments_enabled and page.relative_path is ending_with(pat="/index.md") -%}
+            {%- include "partials/git_comments.html" -%}
+        {%- endif -%}
+
         {#- Webmentions -#}
         {%- set global_webmentions_enabled = config.extra.webmentions.enable | default(value=false) -%}
         {%- set page_webmentions_enabled = page?.extra?.webmentions | default(value=global_webmentions_enabled) -%}
