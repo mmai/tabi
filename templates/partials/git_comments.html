@@ -9,7 +9,7 @@
 
 <section id="comments" class="git-comments">
   <hr>
-  <h2>{{< translate key="comments" default="Comments" />}}{% if commentsSize %} ({{ commentsSize }}){% endif %}</h2>
+  <h2>{{< translate key="comments" default="Comments" />}}</h2>
 
   {%- if commentsSize %}
   <ol role="list">
@@ -39,8 +39,9 @@
   </ol>
   {%- endif %}
 
+  {%- set sending_label %}{{< translate key="comment_sending" default="Sending…" />}}{% endset -%}
   {%- set network_error %}{{< translate key="comment_network_error" default="The comment could not be sent, please try again." />}}{% endset -%}
-  <form class="git-comment-form" method="post" action="{{ config.extra.git_comments.endpoint | default(value='/api/comment') }}" data-error-message="{{ network_error | trim }}">
+  <form class="git-comment-form" method="post" action="{{ config.extra.git_comments.endpoint | default(value='/api/comment') }}" data-error-message="{{ network_error | trim }}" data-sending-label="{{ sending_label | trim }}">
     <input type="hidden" name="page" value="{{ page.relative_path }}">
     <input type="hidden" name="back" value="{{ current_path }}">
     <label>{{< translate key="comment_name" default="Name" />}}

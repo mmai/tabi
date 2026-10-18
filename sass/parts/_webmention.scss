@@ -35,8 +35,11 @@
         font-family: inherit;
     }
 
+    .info {
+      padding-bottom: 1em;
+    }
 
-.likes {
+  .likes {
         display: flex;
         flex-wrap: wrap;
         margin-top: 0.5rem;

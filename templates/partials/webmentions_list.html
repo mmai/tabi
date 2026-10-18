@@ -33,7 +33,7 @@
 <div id="webmentions">
   <hr>
   <h2>{{< translate key="reactions" default="Reactions" />}}</h2>
-  <div>{{< translate key="use-webmentions" default="Vous pouvez commenter depuis votre site en utilisant les" />}} <a href="https://indieweb.org/Webmention">webmentions</a></div>
+  <div class="info">{{< translate key="use-webmentions" default="Vous pouvez commenter depuis votre site en utilisant les" />}} <a href="https://indieweb.org/Webmention">webmentions</a></div>
   {{< webmentions mentions={likes} type="like" icon="heart" text="likes" class=" spacing-sm" />}}
   {{< webmentions mentions={reposts} type="retweet" icon="retweet" text="reposts" class=" spacing-md" />}}
   {{< webmentions mentions={bookmarks} type="bookmark" icon="bookmark" text="bookmarks" class=" spacing-md" />}}

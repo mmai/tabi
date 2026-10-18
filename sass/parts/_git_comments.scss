@@ -1,4 +1,8 @@
 .git-comments {
+  li,p {
+
+        font-family: inherit;
+  }
     h2 {
         font-size: 1.1em;
     }
@@ -24,7 +28,7 @@
     }
 
     .git-comment-author {
-        font-weight: bold;
+        font-size: 1.3em;
     }
 
     .git-comment-message {
@@ -65,6 +69,34 @@
             padding: 0.5rem 1.25rem;
             color: var(--hover-color);
             font: inherit;
+
+            &:disabled {
+                cursor: wait;
+                opacity: 0.7;
+            }
+        }
+
+        &[aria-busy="true"] button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            &::before {
+                animation: git-comment-spin 0.8s linear infinite;
+                box-sizing: border-box;
+                border: 2px solid currentColor;
+                border-radius: 50%;
+                border-inline-end-color: transparent;
+                width: 1em;
+                height: 1em;
+                content: "";
+            }
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .git-comment-form[aria-busy="true"] button::before {
+            animation-duration: 2.4s;
         }
     }
 
@@ -99,5 +131,11 @@
         width: 1px;
         height: 1px;
         overflow: hidden;
+    }
+}
+
+@keyframes git-comment-spin {
+    to {
+        transform: rotate(360deg);
     }
 }

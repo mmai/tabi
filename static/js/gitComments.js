@@ -8,7 +8,11 @@ document.querySelectorAll('form.git-comment-form').forEach((form) => {
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (form.getAttribute('aria-busy') === 'true') return;
+        const label = button.textContent;
+        form.setAttribute('aria-busy', 'true');
         button.disabled = true;
+        button.textContent = form.dataset.sendingLabel || label;
         status.textContent = '';
         status.classList.remove('git-comment-error');
 
@@ -35,7 +39,9 @@ document.querySelectorAll('form.git-comment-form').forEach((form) => {
 
         status.textContent = result.message;
         status.classList.add('git-comment-error');
+        form.removeAttribute('aria-busy');
         button.disabled = false;
+        button.textContent = label;
         // A Turnstile token can only be used once.
         const widget = form.querySelector('.cf-turnstile');
         if (widget && window.turnstile) {
