@@ -39,7 +39,8 @@
   </ol>
   {%- endif %}
 
-  <form class="git-comment-form" method="post" action="{{ config.extra.git_comments.endpoint | default(value='/api/comment') }}">
+  {%- set network_error %}{{< translate key="comment_network_error" default="The comment could not be sent, please try again." />}}{% endset -%}
+  <form class="git-comment-form" method="post" action="{{ config.extra.git_comments.endpoint | default(value='/api/comment') }}" data-error-message="{{ network_error | trim }}">
     <input type="hidden" name="page" value="{{ page.relative_path }}">
     <input type="hidden" name="back" value="{{ current_path }}">
     <label>{{< translate key="comment_name" default="Name" />}}
@@ -59,6 +60,8 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     {%- endif %}
     <p class="git-comment-notice">{{< translate key="comment_moderation_notice" default="Comments are published after moderation." />}}</p>
+    <p class="git-comment-status" role="status" aria-live="polite"></p>
     <button type="submit">{{< translate key="comment_submit" default="Send" />}}</button>
   </form>
+  <script src="{{ get_url(path='js/gitComments.min.js', trailing_slash=false, cachebust=true) | safe }}" defer></script>
 </section>

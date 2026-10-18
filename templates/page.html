@@ -341,6 +341,14 @@ Current section extra: {% if current_section %}{{ current_section.extra | json_e
             {%- endif -%}
         {%- endif -%}
 
+        {#- Webmentions -#}
+        {%- set global_webmentions_enabled = config.extra.webmentions.enable | default(value=false) -%}
+        {%- set page_webmentions_enabled = page?.extra?.webmentions | default(value=global_webmentions_enabled) -%}
+        {%- set webmentions_enabled = global_webmentions_enabled and page_webmentions_enabled != false or page_webmentions_enabled == true -%}
+        {%- if webmentions_enabled -%}
+            {%- include "partials/webmentions_list.html" -%}
+        {%- endif -%}
+
         {#- Comments -#}
         {#- Check if comments are enabled, checking that they are not disabled on the specific page -#}
         {% set systems = ["giscus", "utterances", "hyvortalk", "isso"] %}
@@ -371,14 +379,6 @@ Current section extra: {% if current_section %}{{ current_section.extra | json_e
         {%- set git_comments_enabled = global_git_comments_enabled and page_git_comments_enabled != false or page_git_comments_enabled == true -%}
         {%- if git_comments_enabled and page.relative_path is ending_with(pat="/index.md") -%}
             {%- include "partials/git_comments.html" -%}
-        {%- endif -%}
-
-        {#- Webmentions -#}
-        {%- set global_webmentions_enabled = config.extra.webmentions.enable | default(value=false) -%}
-        {%- set page_webmentions_enabled = page?.extra?.webmentions | default(value=global_webmentions_enabled) -%}
-        {%- set webmentions_enabled = global_webmentions_enabled and page_webmentions_enabled != false or page_webmentions_enabled == true -%}
-        {%- if webmentions_enabled -%}
-            {%- include "partials/webmentions_list.html" -%}
         {%- endif -%}
 
     </article>

@@ -74,6 +74,25 @@
         font-size: 0.8em;
     }
 
+    .git-comment-status {
+        margin: 0;
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    .git-comment-success {
+        border-radius: 10px;
+        background: var(--bg-0);
+        padding: 1rem;
+    }
+
+    .git-comment-error {
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+
     .git-comment-honeypot {
         position: absolute;
         left: -10000px;
